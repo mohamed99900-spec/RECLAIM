@@ -1,0 +1,718 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090d12">
+<title>RECLAIM — استعد زمام حياتك</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
+:root{
+ --bg:#090d12;--panel:#111821;--panel2:#17212c;--line:#263541;
+ --text:#f3f7f7;--muted:#91a2ad;--green:#72f0bd;--mint:#b2ffe0;
+ --purple:#b7a0ff;--orange:#ffbd83;--red:#ff9d9d;
+ --radius:20px
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 10% 0%,#12352a2c,transparent 35%),var(--bg);color:var(--text);font-family:Cairo,Tahoma,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+button:disabled{opacity:.4;cursor:not-allowed}
+.app{max-width:1450px;margin:auto;padding:22px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(140deg,var(--green),#31a982);color:#06160f;font-size:26px;font-weight:900;box-shadow:0 0 35px #72f0bd20}
+.brand h1{font-size:22px;margin:0;letter-spacing:2px;font-weight:900}
+.brand p{font-size:10px;color:var(--muted);margin:0;letter-spacing:1.5px}
+.private{font-size:11px;color:var(--green);border:1px solid #72f0bd3d;border-radius:30px;padding:8px 12px}
+.hero{position:relative;overflow:hidden;border:1px solid #345347;border-radius:27px;padding:32px;background:linear-gradient(115deg,#10251f,#101921 55%,#15152a)}
+.hero:after{content:"✳";position:absolute;left:5%;top:-65px;font-size:210px;color:#72f0bd09;pointer-events:none}
+.eyebrow{font-size:11px;letter-spacing:2px;color:var(--green);font-weight:800}
+.hero h2{font-size:clamp(29px,4.2vw,48px);line-height:1.35;margin:14px 0}
+.hero h2 span{color:var(--green)}
+.hero p{color:#b0c0c2;max-width:620px;font-size:13px;line-height:2;margin:0 0 20px}
+.btn{border:1px solid var(--line);background:#18232d;color:var(--text);border-radius:12px;padding:11px 15px;font-size:12px;font-weight:800;transition:.18s}
+.btn:hover{border-color:var(--green);transform:translateY(-1px)}
+.btn.primary{background:var(--green);border-color:var(--green);color:#07160f}
+.btn.soft{background:#72f0bd13;border-color:#72f0bd35;color:var(--green)}
+.btn.warn{color:var(--orange)}
+.btn.full{width:100%}
+.btn.large{padding:15px 20px;font-size:14px}
+.nav{display:flex;gap:8px;overflow:auto;padding:4px 0 12px;margin:18px 0}
+.nav button{white-space:nowrap;background:transparent;color:var(--muted);border:1px solid transparent;padding:10px 14px;border-radius:12px;font-size:12px}
+.nav button.active{background:#72f0bd12;color:var(--green);border-color:#72f0bd35}
+.page{display:none}
+.page.active{display:block}
+.grid{display:grid;gap:15px}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:19px;min-width:0}
+.stat-label{font-size:11px;color:var(--muted)}
+.stat-value{font-size:32px;line-height:1.5;font-weight:900;margin:6px 0}
+.stat-caption{font-size:10px;color:var(--muted)}
+.green{color:var(--green)}.purple{color:var(--purple)}.orange{color:var(--orange)}
+.dashboard{grid-template-columns:minmax(0,1.4fr) minmax(260px,1fr)}
+.card-title{font-size:16px;margin:0}
+.card-desc{font-size:11px;color:var(--muted);line-height:1.9;margin:6px 0 16px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+.tag{font-size:10px;padding:6px 10px;border-radius:9px;background:#72f0bd12;color:var(--green);white-space:nowrap}
+.progress-track{height:8px;background:#26323c;border-radius:20px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#35bd8d,var(--green));border-radius:20px;transition:width .35s}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin:18px 0}
+.day{text-align:center;padding:10px 2px;border:1px solid var(--line);border-radius:12px;background:#0d141b}
+.day small{display:block;color:var(--muted);font-size:10px}
+.day strong{display:grid;place-items:center;margin:8px auto 0;width:30px;height:30px;border-radius:50%;font-size:11px}
+.day.done strong{background:#72f0bd;color:#07160f}
+.day.today{border-color:var(--green)}
+.day.today strong{border:1px solid var(--green);color:var(--green)}
+.quote{padding:18px;border-radius:15px;background:linear-gradient(120deg,#72f0bd10,#b7a0ff0b);border:1px solid #72f0bd20;line-height:2;font-size:13px}
+.quote small{display:block;color:var(--green);margin-top:8px}
+.challenge-list{display:grid;gap:10px}
+.challenge{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:15px;background:#0e151d}
+.challenge input{width:19px;height:19px;accent-color:var(--green);flex-shrink:0;margin-top:5px}
+.challenge strong{font-size:12px}
+.challenge p{margin:4px 0 0;font-size:11px;color:var(--muted);line-height:1.8}
+.challenge.completed{border-color:#72f0bd40;background:#72f0bd07}
+.challenge.completed strong{color:var(--green)}
+.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.field{margin-bottom:14px}
+.field label{display:block;color:#b9c8ce;font-size:12px;margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;background:#0c131a;border:1px solid var(--line);color:var(--text);border-radius:11px;padding:12px}
+.field textarea{resize:vertical;min-height:90px}
+.option{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:9px;background:#0d141b}
+.option input{accent-color:var(--green);margin-top:5px}
+.option strong{font-size:12px}
+.option small{display:block;color:var(--muted);font-size:10px;line-height:1.8;margin-top:3px}
+.challenge-plan{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.plan{border:1px solid var(--line);border-radius:17px;background:#0d141b;padding:17px}
+.plan h3{margin:0 0 7px;font-size:17px}
+.plan p{color:var(--muted);font-size:11px;line-height:1.9;min-height:60px}
+.plan .days{font-size:12px;color:var(--green);margin-bottom:13px}
+.plan.selected{border-color:var(--green);background:#72f0bd09}
+.big-urge{padding:27px;text-align:center;border:1px solid #725b40;border-radius:22px;background:radial-gradient(ellipse at 50% 0%,#ffbd8315,transparent 65%),var(--panel)}
+.urge-icon{width:78px;height:78px;margin:0 auto 14px;border-radius:26px;display:grid;place-items:center;font-size:32px;background:#ffbd8313;border:1px solid #ffbd8330}
+.big-urge h2{font-size:24px;margin:8px 0}
+.big-urge p{font-size:12px;color:var(--muted);line-height:2;max-width:520px;margin:0 auto 20px}
+.breath{width:150px;height:150px;border:1px solid #72f0bd60;border-radius:50%;margin:25px auto;display:grid;place-items:center;background:radial-gradient(circle,#72f0bd17,transparent 72%);box-shadow:0 0 45px #72f0bd10}
+.breath-inner{width:90px;height:90px;border-radius:50%;display:grid;place-items:center;background:#72f0bd12;border:1px solid #72f0bd40;transition:transform 4s ease-in-out}
+.breath-inner.inhale{transform:scale(1.22)}
+.breath-inner strong{font-size:12px}
+.step-list{display:grid;gap:10px}
+.step{display:flex;gap:12px;padding:13px;border-radius:13px;background:#0d141b;border:1px solid var(--line)}
+.step-number{width:29px;height:29px;flex-shrink:0;border-radius:9px;background:#72f0bd16;color:var(--green);display:grid;place-items:center;font-size:12px;font-weight:900}
+.step strong{font-size:12px}
+.step p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.9}
+.log-list{display:grid;gap:9px}
+.log-item{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:13px;border:1px solid var(--line);border-radius:12px;background:#0d141b}
+.log-item strong{font-size:12px}
+.log-item small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.empty{text-align:center;color:var(--muted);font-size:12px;padding:24px 10px;line-height:2}
+.settings-note{padding:13px;border:1px solid #b7a0ff35;background:#b7a0ff09;border-radius:12px;color:#d4c9ff;font-size:11px;line-height:2}
+footer{text-align:center;color:var(--muted);font-size:10px;line-height:2.1;padding:25px 8px}
+.toast{position:fixed;bottom:20px;left:20px;max-width:calc(100vw - 40px);padding:13px 18px;background:#18262b;border:1px solid #72f0bd60;border-radius:13px;font-size:12px;z-index:10;opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}
+.toast.show{opacity:1;transform:translateY(0)}
+.modal-backdrop{position:fixed;inset:0;background:#000b;z-index:9;display:none;place-items:center;padding:20px}
+.modal-backdrop.show{display:grid}
+.modal{width:min(100%,470px);background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:23px;max-height:90vh;overflow:auto}
+.modal h2{font-size:20px;margin:0 0 8px}
+.modal p{font-size:12px;color:var(--muted);line-height:2}
+@media(max-width:850px){
+ .app{padding:13px}.hero{padding:24px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .dashboard,.challenge-plan{grid-template-columns:1fr}
+ .two,.three{grid-template-columns:1fr}
+ .stat-value{font-size:27px}.card{padding:15px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand">
+    <div class="logo">R</div>
+    <div><h1>RECLAIM<span class="green">.</span></h1><p>YOUR LIFE. YOUR CONTROL.</p></div>
+  </div>
+  <div class="private">◈ بياناتك على جهازك</div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">A NEW CHAPTER STARTS TODAY</div>
+  <h2>مش لازم تكون مثالي.<br><span>المهم ترجع أقوى.</span></h2>
+  <p>مساحة خاصة تساعدك تبني عادات أفضل، وتتعامل مع الرغبة بوعي، وتستثمر وقتك في حياتك الحقيقية. خطوة واحدة في كل مرة.</p>
+  <button class="btn primary large" id="heroStart">ابدأ خطوتك النهارده ←</button>
+</section>
+
+<nav class="nav" aria-label="التنقل">
+  <button class="active" data-page="home">◈ الرئيسية</button>
+  <button data-page="challenges">✦ التحديات</button>
+  <button data-page="urge">↗ وقت الرغبة</button>
+  <button data-page="journal">▤ سجلّي</button>
+  <button data-page="settings">⚙ الإعدادات</button>
+</nav>
+
+<!-- HOME -->
+<section class="page active" id="home">
+  <div class="grid stats">
+    <div class="card"><div class="stat-label">أيام منذ البداية</div><div class="stat-value green" id="daysCount">0</div><div class="stat-caption">كل يوم فرصة جديدة</div></div>
+    <div class="card"><div class="stat-label">أطول سلسلة</div><div class="stat-value purple" id="bestStreak">0</div><div class="stat-caption">أيام متتالية مسجلة</div></div>
+    <div class="card"><div class="stat-label">نقاط الإنجاز XP</div><div class="stat-value orange" id="xpCount">0</div><div class="stat-caption">من المهام والخطوات</div></div>
+    <div class="card"><div class="stat-label">مستواك</div><div class="stat-value" id="levelCount">1</div><div class="stat-caption" id="levelName">البداية الواعية</div></div>
+  </div>
+
+  <div class="grid dashboard">
+    <div class="card">
+      <div class="section-head"><h3 class="card-title">رحلتك الحالية</h3><span class="tag" id="planTag">تحدي 7 أيام</span></div>
+      <div style="display:flex;align-items:end;justify-content:space-between;gap:10px;margin-bottom:8px">
+        <div><div style="font-size:28px;font-weight:900" id="planProgressText">اليوم 1</div><div class="stat-caption">التقدم نحو هدفك</div></div>
+        <div class="green" style="font-weight:900" id="planPercent">0%</div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="planProgressBar"></div></div>
+      <div class="week" id="week"></div>
+      <div class="quote" id="dailyQuote">مش مطلوب منك تغيّر حياتك كلها النهارده. اختار خطوة واحدة والتزم بيها.</div>
+      <button class="btn soft full" style="margin-top:15px" data-goto="challenges">عرض خطة التحدي ←</button>
+    </div>
+    <div class="card">
+      <div class="section-head"><h3 class="card-title">مهمات النهارده</h3><span class="tag" id="taskCount">0 / 5</span></div>
+      <p class="card-desc">المهام الصغيرة بتبني نظامًا تقدر تستمر عليه.</p>
+      <div class="challenge-list" id="todayTasks"></div>
+      <div style="margin-top:15px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px"><span class="stat-label">إنجاز اليوم</span><strong class="green" id="taskPercent">0%</strong></div>
+        <div class="progress-track"><div class="progress-fill" id="taskBar"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid two" style="margin-top:15px">
+    <div class="big-urge">
+      <div class="urge-icon">◉</div>
+      <h2>الرغبة قوية دلوقتي؟</h2>
+      <p>مش لازم تتصرف بناءً على كل إحساس. خُد دقيقة، ابعد عن المحفّز، وخلّي الموجة تعدّي قبل ما تقرر.</p>
+      <button class="btn primary large" data-goto="urge">ابدأ خطة الإنقاذ</button>
+    </div>
+    <div class="card">
+      <h3 class="card-title">تذكير لنفسك</h3>
+      <p class="card-desc">اقرأها وقت ما تحتاج تفتكر أنت بدأت ليه.</p>
+      <div class="field"><label for="myReason">أنا بعمل ده علشان...</label><textarea id="myReason" placeholder="صحتي، وقتي، علاقتي بنفسي، أهدافي..."></textarea></div>
+      <button class="btn soft full" id="saveReason">حفظ التذكير</button>
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGES -->
+<section class="page" id="challenges">
+  <div class="card">
+    <div class="section-head"><h3 class="card-title">اختار تحديك</h3><span class="tag">YOUR PACE</span></div>
+    <p class="card-desc">اختار مدة مناسبة ليك. التحدي أداة لتنظيم السلوك، مش امتحان لقيمتك الشخصية.</p>
+    <div class="challenge-plan">
+      <div class="plan" data-plan="7"><h3>البداية</h3><div class="days">7 أيام</div><p>بناء الوعي بالمحفزات وتجربة روتين يومي بسيط.</p><button class="btn full" data-select-plan="7">اختيار الخطة</button></div>
+      <div class="plan" data-plan="30"><h3>إعادة البناء</h3><div class="days">30 يومًا</div><p>تثبيت بدائل صحية وتحسين إدارة الوقت والمواقف الصعبة.</p><button class="btn full" data-select-plan="30">اختيار الخطة</button></div>
+      <div class="plan" data-plan="90"><h3>نمط حياة</h3><div class="days">90 يومًا</div><p>بناء عادات مستمرة ومراجعة أسبوعية للتقدم والمحفزات.</p><button class="btn full" data-select-plan="90">اختيار الخطة</button></div>
+    </div>
+    <div class="divider" style="margin:20px 0"></div>
+    <h3 class="card-title">حدّد هدفك الشخصي</h3>
+    <p class="card-desc">تقدر تختار هدفًا واحدًا أو الاثنين معًا، من غير مقارنة نفسك بأي شخص آخر.</p>
+    <label class="option"><input type="checkbox" id="goalPorn" checked><span><strong>الابتعاد عن الإباحية</strong><small>تقليل الوصول للمحتوى المحفّز وبناء بدائل مناسبة.</small></span></label>
+    <label class="option"><input type="checkbox" id="goalHabit" checked><span><strong>التوقف عن العادة السرية أو تغيير نمطها</strong><small>هدف شخصي تختاره وفق قناعاتك واحتياجاتك.</small></span></label>
+    <div class="field" style="margin-top:15px"><label for="startDate">تاريخ بداية رحلتك</label><input type="date" id="startDate"></div>
+    <button class="btn primary" id="savePlan">حفظ أهدافي وخطتي</button>
+  </div>
+
+  <div class="card" style="margin-top:15px">
+    <h3 class="card-title">مهام ثابتة تساعدك</h3>
+    <p class="card-desc">اختار المهام اللي تناسب ظروفك. مش مطلوب تنفذ كل حاجة مرة واحدة.</p>
+    <div class="challenge-list" id="challengeTasks"></div>
+  </div>
+</section>
+
+<!-- URGE -->
+<section class="page" id="urge">
+  <div class="big-urge">
+    <div class="urge-icon">◉</div>
+    <div class="eyebrow">PAUSE. BREATHE. CHOOSE.</div>
+    <h2>الرغبة إحساس، مش أمر لازم تنفّذه.</h2>
+    <p>مش محتاج تحارب أفكارك بعنف. لاحظ الإحساس، غيّر المكان أو النشاط، وادّي نفسك وقت قبل اتخاذ أي قرار.</p>
+    <button class="btn primary large" id="startRescue">ابدأ تمرين الـ 60 ثانية</button>
+    <div id="breathingArea" hidden>
+      <div class="breath"><div class="breath-inner" id="breathCircle"><strong id="breathLabel">استعد</strong></div></div>
+      <div style="font-size:24px;font-weight:900" id="breathTimer">60</div>
+      <p id="breathInstruction" style="margin:5px 0 14px">استعد وخد وضعًا مريحًا.</p>
+      <button class="btn" id="stopRescue">إنهاء التمرين</button>
+    </div>
+  </div>
+
+  <div class="grid two" style="margin-top:15px">
+    <div class="card">
+      <h3 class="card-title">خطة الإنقاذ السريعة</h3>
+      <p class="card-desc">اختار خطوة واحدة الآن. الحركة الفعلية وتغيير البيئة غالبًا أنفع من الاستمرار في التفاوض مع الرغبة.</p>
+      <div class="step-list">
+        <div class="step"><div class="step-number">1</div><div><strong>غيّر مكانك</strong><p>قوم من السرير أو المكان اللي ارتبط عندك بالسلوك، وروح لمكان مفتوح.</p></div></div>
+        <div class="step"><div class="step-number">2</div><div><strong>ابعد عن المحفّز</strong><p>اقفل المحتوى، وحط الهاتف بعيدًا، أو فعّل حجب المواقع لو ده بيساعدك.</p></div></div>
+        <div class="step"><div class="step-number">3</div><div><strong>حرّك جسمك</strong><p>امشِ خمس دقائق، اغسل وجهك، أو اعمل نشاطًا بسيطًا يناسبك.</p></div></div>
+        <div class="step"><div class="step-number">4</div><div><strong>اختار بديلًا واعيًا</strong><p>اتصل بصديق، اقرأ، صلِّ إن كان ده مناسبًا لك، أو ابدأ مهمة قصيرة.</p></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="card-title">إيه اللي حرّك الرغبة؟</h3>
+      <p class="card-desc">تسجيل السبب اختياري. الهدف فهم النمط، مش لوم نفسك.</p>
+      <div class="field"><label for="trigger">المحفّز الأقرب</label>
+        <select id="trigger">
+          <option value="الملل">الملل</option><option value="التوتر">التوتر أو القلق</option>
+          <option value="الوحدة">الوحدة</option><option value="السهر">السهر</option>
+          <option value="المحتوى">محتوى على الإنترنت</option><option value="مشاعر أخرى">مشاعر أخرى</option>
+        </select>
+      </div>
+      <div class="field"><label for="urgeIntensity">شدة الرغبة: <output id="urgeValue">5 / 10</output></label><input id="urgeIntensity" type="range" min="1" max="10" value="5" style="width:100%;accent-color:var(--green)"></div>
+      <div class="field"><label for="urgeNote">ملاحظة اختيارية</label><textarea id="urgeNote" placeholder="إيه اللي ممكن يساعدني المرة الجاية؟"></textarea></div>
+      <button class="btn primary full" id="saveUrge">تسجيل اللحظة</button>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNAL -->
+<section class="page" id="journal">
+  <div class="grid two">
+    <div class="card">
+      <h3 class="card-title">سجلّ اليوم</h3>
+      <p class="card-desc">اكتب ملاحظة قصيرة عن يومك أو إنجازك. مش لازم تسجل أي تفاصيل خاصة.</p>
+      <div class="field"><label for="journalMood">إحساسك النهارده</label>
+        <select id="journalMood"><option>كويس</option><option>هادئ</option><option>متوتر</option><option>مرهق</option><option>متحمس</option><option>يوم صعب</option></select>
+      </div>
+      <div class="field"><label for="journalText">ملاحظتك</label><textarea id="journalText" placeholder="إيه الحاجة اللي عملتها النهارده وبتفتخر بيها؟"></textarea></div>
+      <button class="btn primary full" id="saveJournal">حفظ سجل اليوم</button>
+    </div>
+    <div class="card">
+      <h3 class="card-title">لو حصل تعثّر</h3>
+      <p class="card-desc">التعثر معلومة نقدر نتعلم منها، مش حكم على شخصيتك أو إلغاء لكل اللي بنيته.</p>
+      <div class="quote">«أنا مش مطالب أكون مثالي. أنا مطالب أتعلم وأختار خطوتي الجاية.»</div>
+      <div class="step-list" style="margin-top:14px">
+        <div class="step"><div class="step-number">1</div><div><strong>اهدأ من غير جلد للذات</strong><p>خد وقتك، وابتعد عن فكرة إن يومًا صعبًا يحدد مستقبلك كله.</p></div></div>
+        <div class="step"><div class="step-number">2</div><div><strong>افهم اللي حصل</strong><p>هل كان السبب مللًا، ضغطًا، سهرًا، أو محفزًا لم تتوقعه؟</p></div></div>
+        <div class="step"><div class="step-number">3</div><div><strong>عدّل خطوة واحدة</strong><p>غيّر البيئة أو الروتين، وارجع لخطة يومك التالي.</p></div></div>
+      </div>
+      <button class="btn warn full" style="margin-top:15px" id="openSlip">تسجيل تعثّر والتعلم منه</button>
+    </div>
+  </div>
+  <div class="card" style="margin-top:15px">
+    <div class="section-head"><h3 class="card-title">آخر سجلاتك</h3><button class="btn" id="clearLogs">مسح السجلات</button></div>
+    <div id="logs" class="log-list"><div class="empty">لسه مفيش سجلات. ابدأ بتسجيل خطوة صغيرة.</div></div>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page" id="settings">
+  <div class="grid two">
+    <div class="card">
+      <h3 class="card-title">الخصوصية والبيانات</h3>
+      <p class="card-desc">يستخدم التطبيق التخزين المحلي في المتصفح. البيانات ليست حسابًا سحابيًا، وقد تختفي عند مسح بيانات المتصفح أو استخدام جهاز آخر.</p>
+      <button class="btn primary full" id="exportData">تصدير نسخة احتياطية JSON</button>
+      <label class="upload" style="margin-top:10px">استيراد نسخة احتياطية
+        <input id="importData" type="file" accept=".json,application/json">
+      </label>
+      <button class="btn warn full" id="deleteData" style="margin-top:12px">حذف كل بيانات التطبيق</button>
+    </div>
+    <div class="card">
+      <h3 class="card-title">تفضيلات رحلتك</h3>
+      <p class="card-desc">غيّر تاريخ البداية أو مدة التحدي حسب احتياجاتك.</p>
+      <div class="field"><label for="settingsStart">تاريخ البداية</label><input type="date" id="settingsStart"></div>
+      <div class="field"><label for="settingsPlan">مدة التحدي</label><select id="settingsPlan"><option value="7">7 أيام</option><option value="30">30 يومًا</option><option value="90">90 يومًا</option></select></div>
+      <button class="btn soft full" id="saveSettings">حفظ التفضيلات</button>
+      <div class="settings-note" style="margin-top:14px">تنبيه: الأرقام هنا وسيلة متابعة ذاتية، وليست مقياسًا لقيمتك أو لصحتك. يمكنك تعديل هدفك في أي وقت.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  RECLAIM — خطوة واعية كل يوم.<br>
+  لا تُشارك تفاصيلك الخاصة مع أي شخص لا تثق به. وإذا شعرت أن السلوك خارج عن سيطرتك أو يؤثر بشدة على حياتك، فطلب المساعدة من مختص نفسي مؤهل خطوة شجاعة وليست ضعفًا.
+</footer>
+</div>
+
+<div class="modal-backdrop" id="slipModal" role="dialog" aria-modal="true" aria-labelledby="slipTitle">
+  <div class="modal">
+    <h2 id="slipTitle">التعثّر مش نهاية الطريق</h2>
+    <p>سجّل ما يساعدك تفهم الموقف. لن نستخدم لغة لوم أو عقاب.</p>
+    <div class="field"><label for="slipTrigger">السبب الأقرب</label><select id="slipTrigger"><option>الملل</option><option>التوتر</option><option>الوحدة</option><option>السهر</option><option>المحتوى المحفّز</option><option>سبب آخر</option></select></div>
+    <div class="field"><label for="slipLearn">إيه التغيير اللي ممكن يساعدك؟</label><textarea id="slipLearn" placeholder="مثال: أسيب الهاتف خارج غرفة النوم..."></textarea></div>
+    <div class="btn-row"><button class="btn" id="cancelSlip">إلغاء</button><button class="btn primary" id="saveSlip">حفظ والعودة للخطة</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* RECLAIM: local-first habit companion */
+const STORAGE_KEY="reclaim_app_v1";
+const $=id=>document.getElementById(id);
+const today=()=>localDate(new Date());
+function localDate(d){
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function dateAtNoon(s){
+  const [y,m,d]=s.split("-").map(Number);
+  return new Date(y,m-1,d,12,0,0);
+}
+function dayDiff(a,b){
+  return Math.floor((dateAtNoon(b)-dateAtNoon(a))/86400000);
+}
+function safeText(value,max=1000){
+  return String(value??"").slice(0,max);
+}
+function freshState(){
+  return {
+    version:1,startDate:today(),plan:7,goalPorn:true,goalHabit:true,
+    reason:"",xp:0,bestStreak:0,completed:{},claimed:{},logs:[],daily:{},
+    settings:{}
+  };
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw)return freshState();
+    const d=JSON.parse(raw);
+    if(!d||d.version!==1||typeof d.startDate!=="string")return freshState();
+    const base=freshState();
+    return {...base,...d,
+      completed:d.completed&&typeof d.completed==="object"?d.completed:{},
+      claimed:d.claimed&&typeof d.claimed==="object"?d.claimed:{},
+      daily:d.daily&&typeof d.daily==="object"?d.daily:{},
+      logs:Array.isArray(d.logs)?d.logs.slice(0,500):[],
+      settings:d.settings&&typeof d.settings==="object"?d.settings:{}
+    };
+  }catch(e){return freshState();}
+}
+let state=loadState();
+let toastTimer=null;
+function save(){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    return true;
+  }catch(e){
+    notify("تعذر الحفظ. قد تكون مساحة المتصفح ممتلئة.");
+    return false;
+  }
+}
+function notify(msg){
+  const el=$("toast");el.textContent=msg;el.classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2800);
+}
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function go(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===page));
+  document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.goto)));
+$("heroStart").addEventListener("click",()=>go("challenges"));
+
+const dailyTasks=[
+  {id:"water",title:"ابدأ يومك بعناية",desc:"اشرب ماءً وامنح نفسك دقيقة هدوء.",xp:10},
+  {id:"move",title:"تحرّك لمدة 10 دقائق",desc:"مشي أو تمارين بسيطة حسب قدرتك.",xp:15},
+  {id:"phone",title:"ضع الهاتف بعيدًا وقت النوم",desc:"جرّب إبعاده عن السرير أو غرفة النوم.",xp:15},
+  {id:"focus",title:"أنجز مهمة مهمة",desc:"اختار شيئًا صغيرًا من أهدافك الحقيقية.",xp:15},
+  {id:"reflect",title:"راجع يومك لدقيقتين",desc:"لاحظ ما ساعدك وما تحتاج تغييره غدًا.",xp:10}
+];
+const challengeTasks=[
+  {id:"block",title:"راجع محفزاتك الرقمية",desc:"ألغِ متابعة الحسابات المحفزة واستخدم أدوات الحجب إذا احتجتها."},
+  {id:"sleep",title:"ضع روتينًا ثابتًا للنوم",desc:"اختر موعدًا واقعيًا وقلل استخدام الهاتف قبل النوم."},
+  {id:"social",title:"تواصل مع شخص تثق به",desc:"رسالة أو مكالمة قصيرة قد تقلل العزلة."},
+  {id:"hobby",title:"خصص وقتًا لهواية",desc:"رياضة أو قراءة أو تعلم شيء جديد."},
+  {id:"plan",title:"اكتب خطة للمواقف الصعبة",desc:"حدد ما ستفعله إذا جاءك الملل أو التوتر."}
+];
+const quotes=[
+ "مش مطلوب تغيّر حياتك كلها النهارده. اختار خطوة واحدة والتزم بيها.",
+ "التقدم مش دايمًا خط مستقيم؛ المهم تتعلم وتكمل.",
+ "الرغبة ممكن ترتفع وتنخفض من غير ما تتصرف بناءً عليها.",
+ "كل مرة تختار فيها وعيك بدل الاندفاع، أنت بتتدرب على مهارة.",
+ "الراحة والنوم والاتصال بالناس مش رفاهية؛ دي أجزاء من رعايتك لنفسك.",
+ "خليك صبور مع نفسك. بناء العادات محتاج وقت وتجربة.",
+ "مش لازم تكون مثالي عشان تكون فخور بالخطوة اللي أخدتها."
+];
+function daysElapsed(){
+  const d=dayDiff(state.startDate,today());
+  return Math.max(0,d);
+}
+function isChecked(id,date=today()){
+  return !!(state.completed[date]&&state.completed[date][id]);
+}
+function setChecked(id,checked){
+  const date=today();
+  if(!state.completed[date])state.completed[date]={};
+  const was=!!state.completed[date][id];
+  if(was===checked)return;
+  state.completed[date][id]=checked;
+  const task=dailyTasks.find(t=>t.id===id);
+  if(task){
+    const key=date+":"+id;
+    if(checked&&!state.claimed[key]){
+      state.xp+=task.xp;state.claimed[key]=true;
+    }
+    if(!checked&&state.claimed[key]){
+      state.xp=Math.max(0,state.xp-task.xp);delete state.claimed[key];
+    }
+  }else if(checked){
+    const key=date+":"+id;
+    if(!state.claimed[key]){state.xp+=10;state.claimed[key]=true;}
+  }else{
+    const key=date+":"+id;
+    if(state.claimed[key]){state.xp=Math.max(0,state.xp-10);delete state.claimed[key];}
+  }
+  save();render();
+}
+function currentStreak(){
+  let count=0;
+  for(let i=0;i<3650;i++){
+    const date=localDate(new Date(dateAtNoon(today()).getTime()-i*86400000));
+    if(state.logs.some(l=>l.type==="slip"&&l.date===date))break;
+    count++;
+    if(date===state.startDate)break;
+  }
+  return Math.max(0,Math.min(count,daysElapsed()+1));
+}
+function streakEstimate(){
+  // A streak is a self-tracking measure, not a medical metric.
+  const start=state.startDate;
+  const slips=state.logs.filter(l=>l.type==="slip"&&l.date>=start).map(l=>l.date).sort();
+  let segmentStart=start;
+  let best=0;
+  for(const s of slips){
+    best=Math.max(best,Math.max(0,dayDiff(segmentStart,s)));
+    segmentStart=s;
+  }
+  best=Math.max(best,Math.max(0,dayDiff(segmentStart,today())));
+  state.bestStreak=Math.max(Number(state.bestStreak)||0,best);
+  return best;
+}
+function renderStats(){
+  $("daysCount").textContent=daysElapsed();
+  const streak=streakEstimate();
+  $("bestStreak").textContent=Math.max(state.bestStreak,streak);
+  $("xpCount").textContent=state.xp;
+  const level=Math.floor(Math.max(0,state.xp)/100)+1;
+  $("levelCount").textContent=level;
+  const names=["البداية الواعية","باني العادات","صاحب العزيمة","المستمر","المتوازن","صانع التغيير"];
+  $("levelName").textContent=names[Math.min(level-1,names.length-1)]||"مستوى متقدم";
+}
+function renderWeek(){
+  const labels=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  const el=$("week");el.replaceChildren();
+  const now=dateAtNoon(today());
+  const day=now.getDay();
+  const sunday=new Date(now);sunday.setDate(now.getDate()-day);
+  for(let i=0;i<7;i++){
+    const d=new Date(sunday);d.setDate(sunday.getDate()+i);
+    const iso=localDate(d);
+    const done=dailyTasks.every(t=>isChecked(t.id,iso));
+    const item=document.createElement("div");
+    item.className="day"+(iso===today()?" today":"")+(done?" done":"");
+    item.innerHTML="<small>"+labels[i]+"</small><strong>"+(done?"✓":d.getDate())+"</strong>";
+    el.appendChild(item);
+  }
+}
+function renderTasks(){
+  const box=$("todayTasks");box.replaceChildren();
+  let done=0;
+  dailyTasks.forEach(t=>{
+    const checked=isChecked(t.id);if(checked)done++;
+    const label=document.createElement("label");label.className="challenge"+(checked?" completed":"");
+    const cb=document.createElement("input");cb.type="checkbox";cb.checked=checked;
+    cb.addEventListener("change",()=>setChecked(t.id,cb.checked));
+    const content=document.createElement("div");
+    content.innerHTML="<strong>"+escapeHTML(t.title)+"</strong><p>"+escapeHTML(t.desc)+"</p>";
+    label.append(cb,content);box.appendChild(label);
+  });
+  $("taskCount").textContent=done+" / "+dailyTasks.length;
+  $("taskPercent").textContent=Math.round(done/dailyTasks.length*100)+"%";
+  $("taskBar").style.width=(done/dailyTasks.length*100)+"%";
+}
+function renderChallengeTasks(){
+  const box=$("challengeTasks");box.replaceChildren();
+  challengeTasks.forEach(t=>{
+    const checked=isChecked(t.id);
+    const label=document.createElement("label");label.className="challenge"+(checked?" completed":"");
+    const cb=document.createElement("input");cb.type="checkbox";cb.checked=checked;
+    cb.addEventListener("change",()=>setChecked(t.id,cb.checked));
+    const content=document.createElement("div");
+    content.innerHTML="<strong>"+escapeHTML(t.title)+"</strong><p>"+escapeHTML(t.desc)+"</p>";
+    label.append(cb,content);box.appendChild(label);
+  });
+}
+function renderPlan(){
+  const n=Number(state.plan)||7;
+  $("planTag").textContent="تحدي "+n+" أيام";
+  const day=Math.min(daysElapsed()+1,n);
+  const percent=Math.min(100,Math.round((day/n)*100));
+  $("planProgressText").textContent="اليوم "+day+" من "+n;
+  $("planPercent").textContent=percent+"%";
+  $("planProgressBar").style.width=percent+"%";
+  document.querySelectorAll(".plan").forEach(p=>{
+    const active=Number(p.dataset.plan)===n;p.classList.toggle("selected",active);
+    const b=p.querySelector("button");b.textContent=active?"✓ خطتك الحالية":"اختيار الخطة";
+    b.classList.toggle("primary",active);
+  });
+  $("dailyQuote").innerHTML=escapeHTML(quotes[daysElapsed()%quotes.length])+"<small>— تذكيرك اليومي</small>";
+}
+function renderLogs(){
+  const box=$("logs");box.replaceChildren();
+  if(!state.logs.length){box.innerHTML='<div class="empty">لسه مفيش سجلات. ابدأ بتسجيل خطوة صغيرة.</div>';return;}
+  state.logs.slice().sort((a,b)=>(b.time||"").localeCompare(a.time||"")).slice(0,50).forEach(l=>{
+    const item=document.createElement("div");item.className="log-item";
+    const title=l.type==="slip"?"مراجعة تعثّر":l.type==="urge"?"تسجيل رغبة":"سجل يومي";
+    const detail=l.type==="slip"?"السبب: "+(l.trigger||"غير محدد")+" · "+(l.learn||"")
+      :l.type==="urge"?"المحفز: "+(l.trigger||"غير محدد")+" · الشدة: "+(l.intensity||"—")+"/10"
+      :(l.mood||"")+ " · "+(l.note||"");
+    item.innerHTML="<div><strong>"+escapeHTML(title)+"</strong><small>"+escapeHTML(detail)+"</small></div><small>"+escapeHTML(l.date||"")+"</small>";
+    box.appendChild(item);
+  });
+}
+function renderSettings(){
+  $("settingsStart").value=state.startDate;
+  $("settingsPlan").value=String(state.plan);
+  $("goalPorn").checked=!!state.goalPorn;
+  $("goalHabit").checked=!!state.goalHabit;
+  $("startDate").value=state.startDate;
+  $("myReason").value=state.reason||"";
+}
+function render(){
+  renderStats();renderWeek();renderTasks();renderChallengeTasks();renderPlan();renderLogs();renderSettings();
+}
+$("saveReason").addEventListener("click",()=>{
+  state.reason=safeText($("myReason").value,2000);save();notify("اتحفظ تذكيرك الخاص.");
+});
+document.querySelectorAll("[data-select-plan]").forEach(b=>b.addEventListener("click",()=>{
+  state.plan=Number(b.dataset.selectPlan);save();renderPlan();$("settingsPlan").value=String(state.plan);
+  notify("اختار مدة التحدي. احفظ أهدافك لتأكيد الإعدادات.");
+}));
+$("savePlan").addEventListener("click",()=>{
+  if(!$("goalPorn").checked&&!$("goalHabit").checked)return notify("اختار هدفًا واحدًا على الأقل.");
+  const date=$("startDate").value;
+  if(!date||date>today())return notify("اختار تاريخ بداية اليوم أو تاريخًا سابقًا.");
+  state.startDate=date;
+  state.goalPorn=$("goalPorn").checked;state.goalHabit=$("goalHabit").checked;
+  save();render();notify("اتحفظت أهدافك. خطوة بخطوة!");
+});
+$("saveSettings").addEventListener("click",()=>{
+  const date=$("settingsStart").value;
+  if(!date||date>today())return notify("تاريخ البداية غير صالح.");
+  state.startDate=date;state.plan=Number($("settingsPlan").value)||7;
+  save();render();notify("تم حفظ التفضيلات.");
+});
+
+/* Urge logging */
+$("urgeIntensity").addEventListener("input",()=>{$("urgeValue").textContent=$("urgeIntensity").value+" / 10";});
+$("saveUrge").addEventListener("click",()=>{
+  state.logs.push({type:"urge",date:today(),time:new Date().toISOString(),
+    trigger:$("trigger").value,intensity:Number($("urgeIntensity").value),note:safeText($("urgeNote").value,500)});
+  state.xp+=5;
+  $("urgeNote").value="";
+  save();renderLogs();renderStats();notify("تم تسجيل اللحظة. شكرًا إنك بتفهم نفسك.");
+});
+
+/* Breathing exercise */
+let rescueInterval=null,rescueSeconds=60,breathPhase=null;
+function stopRescue(){
+  if(rescueInterval)clearInterval(rescueInterval);
+  rescueInterval=null;
+  $("breathingArea").hidden=true;
+  $("startRescue").hidden=false;
+  $("breathCircle").classList.remove("inhale");
+}
+function updateBreathing(){
+  const elapsed=60-rescueSeconds;
+  const phase=elapsed%10;
+  const isInhale=phase<4;
+  const phaseName=isInhale?"شهيق هادئ":phase<6?"ثبات لطيف":"زفير ببطء";
+  $("breathLabel").textContent=phaseName;
+  $("breathInstruction").textContent=isInhale?"خد نفسًا مريحًا من غير إجبار.":phase<6?"اثبت للحظة لو مريح ليك.":"طلّع النفس بهدوء، من غير ضغط.";
+  $("breathCircle").classList.toggle("inhale",isInhale);
+  $("breathTimer").textContent=rescueSeconds;
+}
+$("startRescue").addEventListener("click",()=>{
+  stopRescue();rescueSeconds=60;
+  $("startRescue").hidden=true;$("breathingArea").hidden=false;
+  updateBreathing();
+  rescueInterval=setInterval(()=>{
+    rescueSeconds--;
+    if(rescueSeconds<=0){
+      stopRescue();notify("أحسنت إنك أخدت دقيقة لنفسك. قيّم إحساسك الآن.");
+      return;
+    }
+    updateBreathing();
+  },1000);
+});
+$("stopRescue").addEventListener("click",()=>{stopRescue();notify("تقدر ترجع للتمرين في أي وقت.");});
+
+/* Journal */
+$("saveJournal").addEventListener("click",()=>{
+  const note=safeText($("journalText").value,2000);
+  const existing=state.logs.findIndex(l=>l.type==="journal"&&l.date===today());
+  const item={type:"journal",date:today(),time:new Date().toISOString(),mood:$("journalMood").value,note};
+  if(existing>=0)state.logs[existing]=item;else state.logs.push(item);
+  state.xp+=10;
+  $("journalText").value="";
+  save();renderLogs();renderStats();notify("اتحفظ سجل اليوم.");
+});
+$("openSlip").addEventListener("click",()=>{
+  $("slipModal").classList.add("show");$("slipLearn").focus();
+});
+$("cancelSlip").addEventListener("click",()=>$("slipModal").classList.remove("show"));
+$("slipModal").addEventListener("click",e=>{if(e.target===$("slipModal"))$("slipModal").classList.remove("show");});
+$("saveSlip").addEventListener("click",()=>{
+  state.logs.push({type:"slip",date:today(),time:new Date().toISOString(),
+    trigger:$("slipTrigger").value,learn:safeText($("slipLearn").value,1000)});
+  $("slipLearn").value="";
+  $("slipModal").classList.remove("show");
+  save();render();notify("اتسجلت المراجعة. التقدم اللي بنيته لسه جزء من رحلتك.");
+});
+$("clearLogs").addEventListener("click",()=>{
+  if(!confirm("تمسح كل السجلات اليومية؟ لا يمكن التراجع عن الحذف."))return;
+  state.logs=[];save();renderLogs();renderStats();notify("تم مسح السجلات.");
+});
+
+/* Backup and restore */
+$("exportData").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download="reclaim-backup.json";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  notify("تم تجهيز النسخة الاحتياطية.");
+});
+$("importData").addEventListener("change",async e=>{
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  try{
+    if(file.size>2*1024*1024)throw new Error("الحجم كبير");
+    const parsed=JSON.parse(await file.text());
+    if(!parsed||parsed.version!==1||typeof parsed.startDate!=="string"||
+       !parsed.completed||typeof parsed.completed!=="object"||!Array.isArray(parsed.logs)){
+      throw new Error("صيغة غير متوافقة");
+    }
+    if(!confirm("سيتم استبدال بياناتك الحالية بالنسخة المستوردة. هل تريد المتابعة؟"))return;
+    const clean=freshState();
+    state={...clean,...parsed,
+      logs:parsed.logs.slice(0,500),
+      completed:parsed.completed,
+      claimed:parsed.claimed&&typeof parsed.claimed==="object"?parsed.claimed:{},
+      daily:parsed.daily&&typeof parsed.daily==="object"?parsed.daily:{},
+      settings:parsed.settings&&typeof parsed.settings==="object"?parsed.settings:{}
+    };
+    save();render();notify("تم استيراد النسخة الاحتياطية.");
+  }catch(err){notify("تعذر استيراد الملف. اختر نسخة RECLAIM صحيحة.");}
+  finally{$("importData").value="";}
+});
+$("deleteData").addEventListener("click",()=>{
+  if(!confirm("هل أنت متأكد؟ سيتم حذف الأهداف والسجلات والنقاط من هذا المتصفح نهائيًا."))return;
+  state=freshState();save();render();notify("تمت إعادة التطبيق إلى البداية.");
+});
+
+/* Start */
+if(!state.startDate||state.startDate>today())state.startDate=today();
+render();
+</script>
+</body>
+</html>
